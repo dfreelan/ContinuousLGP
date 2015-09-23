@@ -74,7 +74,9 @@ public class Simplex extends WeightVector {
         
         return weights;
     }
-
+    /* 
+        TODO: should be replaced with some walk algorithm, not a naiive weighted average
+    */
     private void applyMutation(float strength) {
         //applies the mutation part
         for(int i = 0; i<weights.length; i++){

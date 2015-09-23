@@ -11,18 +11,18 @@ package continuouslgp.program.representation;
  * @author dfreelan
  */
 public class Torus extends WeightVector {
-
+    
+    float locationOnTorus = 0.0f;
     public Torus(int length) {
         super(length);
     }
 
     @Override
     public void Initialize() {
+        
         float pseudoIndex = generator.nextFloat()*(length+1);
-        float decimalPart = pseudoIndex - (float)Math.floor(pseudoIndex);
-        int integerPart = (int)pseudoIndex;
-        weights[integerPart] = 1 - decimalPart;
-        weights[(integerPart+1)%length] = decimalPart;
+        locationOnTorus = pseudoIndex;
+        
         mutateVector = new float[1];
     }
     
@@ -36,19 +36,23 @@ public class Torus extends WeightVector {
 
     @Override
     public float[] changeStrength(float strength) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        weights = oldWeights.clone();
+        applyMutation(strength);
+        return weights;
     }
-
-    @Override
-    public float[] getWeights() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setWeights(float[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     
+    private void applyMutation(float strength) {
+        locationOnTorus = mutateVector[0]*(1-strength) + strength*locationOnTorus;
+        weights = generateWeightsFromLocation(locationOnTorus);
+    }
+
+    private float[] generateWeightsFromLocation(float location){
+        float[] arr = new float[length];
+        float decimalPart = location - (float)Math.floor(location);
+        int integerPart = (int)location;
+        arr[integerPart] = 1 - decimalPart;
+        arr[(integerPart+1)%length] = decimalPart;
+        return arr;
+    }
     
 }

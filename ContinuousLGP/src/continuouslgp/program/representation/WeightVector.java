@@ -30,8 +30,8 @@ public abstract class WeightVector {
     //should actually give weights values, in some random fasion.
     abstract void Initialize();
     
-    abstract float[] mutate(float strength);
-    abstract float[] changeStrength(float strength);
+    public abstract float[] mutate(float strength);
+    public abstract float[] changeStrength(float strength);
     
     public float[] getWeights(){
         return weights;
