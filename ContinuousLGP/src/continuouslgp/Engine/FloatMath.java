@@ -14,7 +14,7 @@ public class FloatMath {
     public static float[] normalize(float[] arr, float sum){
         float total = 0;
         for(int i = 0; i<arr.length; i++){
-            sum+=arr[i];
+            total+=arr[i];
         }
         for(int i = 0; i<arr.length; i++){
             arr[i] /= (total/sum);

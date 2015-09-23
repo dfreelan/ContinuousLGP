@@ -43,16 +43,6 @@ public class Simplex extends WeightVector {
         return weights;
     }
 
-    @Override
-    public float[] getWeights() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setWeights(float[] weights) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /*
         using code from
         http://stackoverflow.com/questions/2171074/generating-a-probability-distribution
@@ -80,15 +70,23 @@ public class Simplex extends WeightVector {
     private void applyMutation(float strength) {
         //applies the mutation part
         for(int i = 0; i<weights.length; i++){
-            weights[i] = weights[i]*(1-strength) + mutateVector[i]*strength;
+            //subtracting center of the simplex from the mutation vector.
+            weights[i] = weights[i] + (mutateVector[i]- (1.0f/((float)length)))*strength;
+            //cant have a negative instruction, 
+            //the actionless if is a paranoia of wanting the most common 
+            //if statement to evaluate to true, since i read that in an 
+            //article that evaluating to something consistently boosts the speed,
+            //due to pipelining and all.
+            if(weights[i]>0){
+                
+            }else{
+                weights[i] = 0;
+            }
         }
         //checks to see if we're due for some renormalizing due to potential floating point err
-        if(weightRenormalizeCounter>0){
-            weightRenormalizeCounter = weightRenormalizeCounter - 1;
-        }else{
-            weightRenormalizeCounter=renormalizeTime;
-            FloatMath.normalize(weights);
-        }
+        
+         FloatMath.normalize(weights);
+       
     }
     
     
