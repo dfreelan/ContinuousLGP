@@ -12,7 +12,7 @@ package continuouslgp.program.representation;
  */
 public class Torus extends WeightVector {
     
-    float locationOnTorus = 0.0f;
+    float locationOnTorus;
     public Torus(int length) {
         super(length);
     }
@@ -20,15 +20,15 @@ public class Torus extends WeightVector {
     @Override
     public void Initialize() {
         
-        float pseudoIndex = generator.nextFloat()*(length+1);
+        float pseudoIndex = generator.nextFloat()*(length);
         locationOnTorus = pseudoIndex;
-        
         mutateVector = new float[1];
+        applyMutation(0);//a trick to set the current weights to the current torus location
     }
     
     @Override
     public float[] mutate(float strength) {
-        mutateVector[0] = generator.nextFloat()*(length+1);
+        mutateVector[0] = generator.nextFloat()*(length);
         oldWeights = weights.clone();
         applyMutation(strength);
         return weights;
@@ -41,8 +41,8 @@ public class Torus extends WeightVector {
         return weights;
     }
     
-    private void applyMutation(float strength) {
-        locationOnTorus = mutateVector[0]*(1-strength) + strength*locationOnTorus;
+    public void applyMutation(float strength) {
+        locationOnTorus = mutateVector[0]*strength + (1-strength)*locationOnTorus;
         weights = generateWeightsFromLocation(locationOnTorus);
     }
 

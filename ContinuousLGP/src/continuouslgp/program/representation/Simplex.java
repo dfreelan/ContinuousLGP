@@ -65,13 +65,13 @@ public class Simplex extends WeightVector {
         return weights;
     }
     /* 
-        TODO: should be replaced with some walk algorithm, not a naiive weighted average
+        TODO: think about this function more... but I THINK this is what I want.
     */
-    private void applyMutation(float strength) {
+    public void applyMutation(float strength) {
         //applies the mutation part
         for(int i = 0; i<weights.length; i++){
             //subtracting center of the simplex from the mutation vector.
-            weights[i] = weights[i] + (mutateVector[i]- (1.0f/((float)length)))*strength;
+            weights[i] = weights[i] + (mutateVector[i]- (1.0f/((float)length)))*(strength);
             //cant have a negative instruction, 
             //the actionless if is a paranoia of wanting the most common 
             //if statement to evaluate to true, since i read that in an 
