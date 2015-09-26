@@ -13,7 +13,7 @@ import continuouslgp.program.representation.*;
  *
  * @author dfreelan
  */
-class ContinuousLine {
+public class ContinuousLine {
     static int instrType = 0;
     static int srcType = 0;
     static int destType = 0;
@@ -38,18 +38,20 @@ class ContinuousLine {
         src.changeStrength(strength);
         dest.changeStrength(strength);
     }
-    public WeightVector assignType(int type, int length){
+    private WeightVector assignType(int type, int length){
         switch(type){
             case 0:
                 return new Simplex(length);
             case 1:
                 return new Torus(length);
+            case 2: 
+                return new NaiiveSimplex(length);
             default:
                 return null;
         }
     }
 
-    float[][] getLineValues() {
+    public float[][] getLineValues() {
         float[][] ret = new float[3][];
         ret[0] = instr.getWeights();
         ret[1] = src.getWeights();

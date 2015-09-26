@@ -47,7 +47,7 @@ public class Simplex extends WeightVector {
         using code from
         http://stackoverflow.com/questions/2171074/generating-a-probability-distribution
     */
-    private float[] getUniformSimplexSample(){
+    float[] getUniformSimplexSample(){
         float weights[] = new float[length];
         float sum = 0;
         
