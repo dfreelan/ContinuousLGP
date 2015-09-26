@@ -7,6 +7,7 @@
 package continuouslgp.machine;
 
 import continuouslgp.Engine.Engine;
+import continuouslgp.program.ContinuousProgram;
 
 /**
  *
@@ -21,11 +22,20 @@ public class ContinuousMachine {
     RegisterProfile profile;
     float[] registers;
     int execType = 0;
-    Engine myEngine;
-    public ContinuousMachine(int maxPCs, int numRegisters, Engine myEngine, int execType){
-       this.execType = execType;
+    ContinuousProgram program;
+    public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
+        this.execType = execType;
+        this.profile = profile;
+        this.maxPCs = maxPCs;
+        this.program = p;
         pcs = new ProgramCounter[maxPCs];
-        pcs[0] = new ProgramCounter(myEngine,0,1.0f,execType, profile);
+        pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
+    
+    }
+    public void doStep(){
+        for(ProgramCounter pc: pcs){
+            pc.doInstruction(program.lines[pc.line]);
+        }
     }
     public void hardRestart(){
         
@@ -33,7 +43,7 @@ public class ContinuousMachine {
     public void softRestart(){
         if(resetPcs){
            curPcs = 0;
-           pcs[0] = new ProgramCounter(myEngine,0,1.0f,execType, profile);
+           pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
 
         }
     }

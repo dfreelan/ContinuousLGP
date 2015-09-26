@@ -6,6 +6,9 @@
 
 package continuouslgp;
 
+import continuouslgp.machine.ContinuousMachine;
+import continuouslgp.program.ContinuousProgram;
+
 /**
  *
  * @author dfreelan
@@ -16,7 +19,12 @@ public class ContinuousLGP {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        //public ContinuousProgram(int length, int lineLength, int srcLength, int destLength, int instrType, int srcType, int destType){
+
+        ContinuousProgram prog = new ContinuousProgram(10,4,7,7,0,0,0);
+        ContinuousMachine machine = new ContinueousMachine();
     }
-    
+    static Operator[] getOperators(){
+        
+    }
 }

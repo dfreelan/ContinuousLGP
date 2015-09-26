@@ -14,8 +14,10 @@ import continuouslgp.program.ContinuousLine;
 
 public abstract class LineExecutor  {
     RegisterProfile profile;
-    public LineExecutor(RegisterProfile profile){
+    ProgramCounter counter;
+    public LineExecutor(RegisterProfile profile, ProgramCounter counter){
         this.profile = profile;
+        this.counter = counter;
     }
     
     abstract ProgramCounter[] doLine(ContinuousLine line, float[] registers);

@@ -19,21 +19,33 @@ public class ProgramCounter {
     float weight;
     float[] registers;   
     RegisterProfile profile; 
-    Engine engine;
     public ProgramCounter[] doInstruction(ContinuousLine line){
         return exec.doLine(line, registers);
     }
-    public ProgramCounter(Engine engine, int line, float weight, int executorType, RegisterProfile profile){
+
+    public ProgramCounter(int line, float weight, int executorType, RegisterProfile profile){
         this.line = line;
-        this.engine = engine;
+     
         this.profile = profile;
         this.weight = weight;
         exec = getInstance(executorType);
     }
+    public ProgramCounter(ProgramCounter other){
+      this.line  = other.line;
+      this.weight = other.weight;
+      this.registers = other.registers.clone();
+      this.exec = other.exec;
+      this.profile = other.profile;
+    }
+    public ProgramCounter(ProgramCounter other, int line, float weight){
+        this(other);
+        this.line = line;
+        this.weight = weight;
+    }
     LineExecutor getInstance(int type){
         switch(type){
             case 0:
-                return new CombinationalExecutor(profile);
+                return new CombinationalExecutor(profile,this);
             default:
                 return null;
         }

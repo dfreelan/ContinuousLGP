@@ -11,7 +11,7 @@ package continuouslgp.program;
  * @author dfreelan
  */
 public class ContinuousProgram {
-    ContinuousLine[] lines = null;
+    public ContinuousLine[] lines = null;
     int length;
     int lineLength;
     public ContinuousProgram(int length, int lineLength, int srcLength, int destLength, int instrType, int srcType, int destType){
