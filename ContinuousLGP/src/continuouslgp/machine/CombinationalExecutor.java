@@ -6,6 +6,7 @@
 
 package continuouslgp.machine;
 
+import continuouslgp.Engine.FloatMath;
 import continuouslgp.program.ContinuousLine;
 
 /**
@@ -21,6 +22,7 @@ public class CombinationalExecutor extends LineExecutor {
     ProgramCounter[] doLine(ContinuousLine line, float[] registers) {
         commandWrapper res1 = generateCommands(line.getLineValues());
         ProgramCounter[] pcs = new ProgramCounter[1];
+        System.out.println("this is where i'm calling the engine");
         float[] result = profile.engine.getResult(res1.questions, registers, res1.weights);
         pcs[0]= counter;
         counter.registers = result;
@@ -34,6 +36,12 @@ public class CombinationalExecutor extends LineExecutor {
         wrap.questions = questions;
         wrap.weights = weights;
         int count = 0;
+        System.out.println("instruction:");
+        FloatMath.printFloatArr(instructions[0]);
+        System.out.println("src:");
+        FloatMath.printFloatArr(instructions[0]);
+        System.out.println("dest:");
+        FloatMath.printFloatArr(instructions[0]);
         for(int i = 0; i<instructions[0].length; i++){
             int type = i;
             for(int a = 0; a<instructions[1].length; a++){

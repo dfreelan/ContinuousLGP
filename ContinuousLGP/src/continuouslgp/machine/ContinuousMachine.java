@@ -18,7 +18,7 @@ public class ContinuousMachine {
     boolean resetPcs = false;
     int maxPCs;
     int curPcs = 0;
-    ProgramCounter[] pcs;
+    public ProgramCounter[] pcs;
     RegisterProfile profile;
     float[] registers;
     int execType = 0;
@@ -29,6 +29,7 @@ public class ContinuousMachine {
         this.maxPCs = maxPCs;
         this.program = p;
         pcs = new ProgramCounter[maxPCs];
+        profile.length = numRegisters;
         pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
     
     }

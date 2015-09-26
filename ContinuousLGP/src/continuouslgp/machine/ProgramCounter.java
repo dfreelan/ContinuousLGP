@@ -17,7 +17,7 @@ public class ProgramCounter {
     LineExecutor exec;
     int line;
     float weight;
-    float[] registers;   
+    public float[] registers;   
     RegisterProfile profile; 
     public ProgramCounter[] doInstruction(ContinuousLine line){
         return exec.doLine(line, registers);
@@ -29,6 +29,10 @@ public class ProgramCounter {
         this.profile = profile;
         this.weight = weight;
         exec = getInstance(executorType);
+        registers = new float[profile.length];
+        for(int i = 0; i<registers.length; i++){
+            registers[i] = 1.0f;
+        }
     }
     public ProgramCounter(ProgramCounter other){
       this.line  = other.line;
