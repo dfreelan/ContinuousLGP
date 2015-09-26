@@ -26,17 +26,25 @@ public class Engine {
         float[] cumulationRegisters = new float[pseudoRegisters.length];
         float[] dummyRegisters;
         int i = 0;
-        while(i<questions.length && questions[i]!=null){
+        while(i<questions.length && weights[i]!=0){
             
             dummyRegisters = pseudoRegisters.clone();
-            dummyRegisters = operators[questions[i][0]].doOperation(dummyRegisters, questions[i][1], questions[i][2]);
-           
+            int operator = questions[i][0];
+            int src = questions[i][1];
+            int dest = questions[i][2];
+            //System.out.println("Operator, src, dest:" + operator +"," + src+ "," + dest +  "weight:" + weights[i]);
+            //FloatMath.printFloatArr( dummyRegisters);
+            
+            
+            dummyRegisters = operators[operator].doOperation(dummyRegisters, src, dest);
+            //System.out.println("result:");
+            //FloatMath.printFloatArr(dummyRegisters);
             for(int a = 0; a<cumulationRegisters.length; a++){
-               // System.out.println("Operator:" + questions[i][0] + " weight:" + weights[i]);
-                //FloatMath.printFloatArr( dummyRegisters);
-                int k = 0;
-                int b = 5/k;
-                cumulationRegisters[a] += weights[i] * dummyRegisters[a];
+                
+                //int k = 0;
+                //int b = 5/k;
+                if(dummyRegisters[a]!=Float.NaN && dummyRegisters[a]!=Float.NEGATIVE_INFINITY && dummyRegisters[a]!=Float.POSITIVE_INFINITY)
+                 cumulationRegisters[a] += weights[i] * dummyRegisters[a];
             }
             i++;
         }

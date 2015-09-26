@@ -24,13 +24,14 @@ public class ContinuousLGP {
     public static void main(String[] args) {
         //public ContinuousProgram(int length, int lineLength, int srcLength, int destLength, int instrType, int srcType, int destType){
 
-        ContinuousProgram prog = new ContinuousProgram(1,4,7,7,0,0,0);
+        ContinuousProgram prog = new ContinuousProgram(1000,4,7,7,0,0,0);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         Engine engine = new Engine(getOperators(),null);
         RegisterProfile prof = new RegisterProfile(engine);
         ContinuousMachine machine = new ContinuousMachine(prog,prof,1,7,0);
-        machine.pcs[0].registers[0] = 1.0f;
-        machine.doStep();
+        machine.pcs[0].registers[0] = 2.0f;
+        for(int i = 0; i<1000; i++)
+            machine.doStep();
         System.out.println(machine.pcs[0].registers[0]);
     }
     static Operator[] getOperators(){

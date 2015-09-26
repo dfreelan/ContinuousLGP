@@ -31,7 +31,7 @@ public class CombinationalExecutor extends LineExecutor {
 
     private commandWrapper generateCommands(float[][] instructions) {
         commandWrapper wrap = new commandWrapper();
-        int[][] questions = new int[instructions[0].length*instructions[1].length][3];
+        int[][] questions = new int[instructions[0].length*instructions[1].length*instructions[2].length][3];
         float weights[] = new float[questions.length];
         wrap.questions = questions;
         wrap.weights = weights;
@@ -39,21 +39,25 @@ public class CombinationalExecutor extends LineExecutor {
         System.out.println("instruction:");
         FloatMath.printFloatArr(instructions[0]);
         System.out.println("src:");
-        FloatMath.printFloatArr(instructions[0]);
+        FloatMath.printFloatArr(instructions[1]);
         System.out.println("dest:");
-        FloatMath.printFloatArr(instructions[0]);
+        FloatMath.printFloatArr(instructions[2]);
         for(int i = 0; i<instructions[0].length; i++){
             int type = i;
+            if(instructions[1][i] != 0.0f)
             for(int a = 0; a<instructions[1].length; a++){
                 int src = a;
                 if(instructions[1][a] != 0.0f)
                 for(int k = 0; k <instructions[2].length; k++){
                     int dest = k;
+                    //System.out.println("found one! Question,weight " + type + " " + src + " " + dest + " " + (instructions[0][i]*instructions[1][a]*instructions[2][k]));
                     if(instructions[2][k]!=0){
                         questions[count][0] = type;
                         questions[count][1] = src;
                         questions[count][2] = dest;
+                        
                         weights[count] = instructions[0][i]*instructions[1][a]*instructions[2][k];
+                        count++;
                     }
                 }
             }
