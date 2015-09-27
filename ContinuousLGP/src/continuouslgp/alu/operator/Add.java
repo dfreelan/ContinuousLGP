@@ -14,6 +14,9 @@ public class Add implements Operator {
     @Override
     public float[] doOperation(float[] registers, int src, int dest) {
         registers[dest] = registers[src] + registers[dest];
+        if(Float.isInfinite(registers[dest])){
+            registers[dest] = 1.0f;
+        }
         return registers;
     }
     

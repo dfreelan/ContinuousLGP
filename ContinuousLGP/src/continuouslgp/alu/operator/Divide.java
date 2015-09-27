@@ -16,8 +16,9 @@ public class Divide implements Operator {
         if(registers[src] != 0.0f){
             registers[dest] = registers[dest]/registers[src];
         }else{
-            registers[dest] = registers[dest]/Float.MIN_NORMAL;
+            registers[dest] = Float.MAX_VALUE/200.0f;
         }
+
         return registers;
     }
     

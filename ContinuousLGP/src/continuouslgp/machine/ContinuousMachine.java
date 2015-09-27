@@ -33,17 +33,23 @@ public class ContinuousMachine {
         pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
     
     }
+    public void mutate(float strength){
+        program.mutate(strength);
+    }
+    public void changeStrength(float strength){
+        program.changeStrength(strength);
+    }
     public void doStep(){
         for(ProgramCounter pc: pcs){
             pc.doInstruction(program.lines[pc.line]);
         }
     }
     public void hardRestart(){
-        
+        pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
     }
     public void softRestart(){
         if(resetPcs){
-           curPcs = 0;
+           curPcs = 1;
            pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
 
         }
