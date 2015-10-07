@@ -22,7 +22,7 @@ public class ContinuousMachine {
     RegisterProfile profile;
     float[] registers;
     int execType = 0;
-    ContinuousProgram program;
+    public ContinuousProgram program;
     public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         this.execType = execType;
         this.profile = profile;
@@ -33,6 +33,9 @@ public class ContinuousMachine {
         pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
     
     }
+    public void printProg(){
+        program.printAll();
+    }
     public void mutate(float strength){
         program.mutate(strength);
     }
@@ -40,9 +43,16 @@ public class ContinuousMachine {
         program.changeStrength(strength);
     }
     public void doStep(){
+        ProgramCounter allCounters[][] = new ProgramCounter[pcs.length][];
+        int i = 0;
+      
         for(ProgramCounter pc: pcs){
-            pc.doInstruction(program.lines[pc.line]);
+            //System.out.println(pc.line);
+            allCounters[i] =  pc.doInstruction(program.lines[pc.line]);
+            pc.line++;
+            i++;
         }
+        
     }
     public void hardRestart(){
         pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
@@ -51,6 +61,7 @@ public class ContinuousMachine {
         if(resetPcs){
            curPcs = 1;
            pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
+           
 
         }
     }

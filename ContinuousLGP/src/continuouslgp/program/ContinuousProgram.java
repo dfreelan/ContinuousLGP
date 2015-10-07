@@ -6,6 +6,8 @@
 
 package continuouslgp.program;
 
+import continuouslgp.Engine.FloatMath;
+
 /**
  *
  * @author dfreelan
@@ -21,6 +23,12 @@ public class ContinuousProgram {
         for(int i = 0; i<lines.length; i++){
             lines[i] = new ContinuousLine(instrType, srcType, destType, lineLength, srcLength, destLength);
         }
+    }
+    public void printAll(){
+        for(int i = 0; i<lines.length; i++){
+            FloatMath.printFloatArr(lines[i].getLineValues());
+        }
+        System.out.println("end prog");
     }
     public void mutate(float strength){
         for(int i = 0; i<lines.length; i++){

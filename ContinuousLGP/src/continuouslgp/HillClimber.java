@@ -19,40 +19,52 @@ import java.util.Random;
 public class HillClimber {
     static Random generator = new Random();
     public static void main(String[] args){
-         ContinuousProgram prog = new ContinuousProgram(5,4,7,7,0,0,0);
+         ContinuousProgram prog = new ContinuousProgram(1000,5,5,5,2,2,2);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         Engine engine = new Engine(getOperators(),null);
         RegisterProfile prof = new RegisterProfile(engine);
-        ContinuousMachine machine = new ContinuousMachine(prog,prof,1,7,0);
-        
-        float[][] trainingData = getTrainingData(20);
-        float[][] testingData = getTrainingData(20);
+        ContinuousMachine machine = new ContinuousMachine(prog,prof,1,5,0);
+        int evaluations = 0;
+        float[][] trainingData = getTrainingData(200);
+        float[][] testingData = getTrainingData(200);
         for(int iterations = 0; iterations<1000; iterations++){
-            System.err.println("epoch:" +iterations);
+            //System.err.println("epoch:" +iterations);
+            if(evaluations>=50000) break;
             for(int pair = 0; pair<trainingData.length; pair++){
                 int tries = 0;
                
 
                 do{
-                    float mutateAmount = .0001f;
-                    float mutateIncrement = .00001f;
+                    float mutateAmount = .001f;
+                    float mutateIncrement = .001f;
                     float currentErr = getError(trainingData[pair], machine);
                     if(currentErr<.0001) break;
                     if(Float.isInfinite(currentErr)){
-                            machine.mutate(1);
-                            System.err.println("i mutated it good");
-                            break;
-                        }
+                        machine.mutate(1);
+                        //System.err.println("i mutated it good");
+                         prog = new ContinuousProgram(10,5,5,5,0,0,0);
+                        machine = new ContinuousMachine(prog,prof,1,5,0);
+                        break;
+                    }
                     machine.mutate(mutateAmount);
                     float newErr = getError(trainingData[pair],machine);
                     boolean fail = false;
                     float prevError = newErr;
-                    float minChange = .98f;
+                    float minChange = .90f;
+                    evaluations++;
                     if(currentErr>.01f){
                        // minChange =.95f;
                     }
-                    while(!(newErr/currentErr >.90 && newErr/currentErr <minChange || newErr/currentErr<.1)){
-                         
+                    int tries2 = 0;
+                    if(newErr<currentErr){
+                    while( (!(newErr/currentErr >.80 && newErr/currentErr <minChange || newErr/currentErr<.1))){
+                        tries2++;
+                        if(tries2>1000){
+                            fail = true;
+                            System.err.println("tried too many times");
+                            machine.changeStrength(0);
+                            break;
+                        }
                         if(prevError < newErr){
                             fail = true;
                             //System.err.println("worse in a different way");
@@ -60,10 +72,12 @@ public class HillClimber {
                             break;
                         }
                         if(Float.isInfinite(newErr)){
-                            System.err.println("error was infinite");
+                            //System.err.println("error was infinite");
+                            prog = new ContinuousProgram(10,4,7,7,0,0,0);
+                            machine = new ContinuousMachine(prog,prof,1,7,0);
                             fail = true;
-                            machine.changeStrength(0);
-                            machine.mutate(1);
+                            
+                            //machine.mutate(1);
                             break;
                         }
                         if(newErr/currentErr<1){
@@ -80,22 +94,47 @@ public class HillClimber {
                         newErr = getError(trainingData[pair],machine);
                         
                     }
+                     //System.err.println("exit condition met:" + newErr/currentErr + " " + fail);
+                    evaluations+=5;
+                    }else{
+                        fail = true;
+                        machine.changeStrength(0);
+                    }
                     if(!fail){
-                        System.err.println(trainingData[pair][1]);
-                        System.err.println("current err " + currentErr);
-                        System.err.println("change in eror5:" + newErr/currentErr);
+                         //System.err.println("exit condition met, fail false:" + newErr/currentErr + " " + fail);
+                        float err1 = getTestingErr(machine,testingData);
+                        if(Float.isInfinite(err1)){
+                            err1 = -1;
+                        }
+                        float err2 = getTestingErr(machine, trainingData);
+                        if(Float.isInfinite(err2)){
+                            err2 = -1;
+                        }
+                        System.err.println(iterations + "," +evaluations +", " +(newErr/currentErr)+ ", " + mutateAmount + ", " + currentErr + ", " + err1 + ", "  + err2);
+                        
+                        //System.err.println(trainingData[pair][1]); 
+                        //System.err.println("current err " + currentErr);
+                        //System.err.println("change in eror10:" + newErr/currentErr);
                     }
                     if(!fail)
                         break;
-                }while(tries<1000);
+                }while(tries<2);
             }
         }
         float sum = 0;
         for(int pair = 0; pair<trainingData.length; pair++){
             sum+= Math.sqrt(getError(testingData[pair],machine))/20;
         }
-        System.err.println(sum);
+        machine.printProg();
+        
+        for(int i = 0; i<200; i++){
+            float k = (float)(i+.01);
+            float input = k*(9.0f/200.0f);
+            System.err.println(input + " " + getOutput(machine,input));
+        }
+        //System.err.println(sum);
     }
+    
     static float[][] getTrainingData(int number){
         float[][] data = new float[20][2];
         for(int i = 0; i<data.length; i++){
@@ -104,13 +143,34 @@ public class HillClimber {
         }
         return data;
     }
+    static float getTestingErr(ContinuousMachine machine, float[][] testingData){
+        float sum = 0;
+        for(int pair = 0; pair<testingData.length; pair++){
+            sum+= Math.sqrt(getError(testingData[pair],machine))/20;
+        }
+        return sum;
+        
+    }
     static float getError(float[] inputOutputPair, ContinuousMachine machine){
        machine.hardRestart();
-        machine.pcs[0].registers[0] = inputOutputPair[0];
-       for(int i = 0; i<100; i++)
+       machine.pcs[0].registers[0] = inputOutputPair[0];
+       for(int i = 0; i<machine.program.lines.length; i++){
             machine.doStep();
+            machine.pcs[0].registers[0] = inputOutputPair[0];
+       }
        float answer = machine.pcs[0].registers[3];
        
        return (answer-inputOutputPair[1])*(answer-inputOutputPair[1]);
+    }
+    static float getOutput(ContinuousMachine machine, float input){
+       machine.hardRestart();
+       machine.pcs[0].registers[0] = input;
+       for(int i = 0; i<machine.program.lines.length; i++){
+            machine.doStep();
+            machine.pcs[0].registers[0] = input;
+       }
+       float answer = machine.pcs[0].registers[3];
+       
+       return answer;
     }
 }

@@ -40,9 +40,6 @@ public class Engine {
             //System.out.println("result:");
             //FloatMath.printFloatArr(dummyRegisters);
             for(int a = 0; a<cumulationRegisters.length; a++){
-                
-                //int k = 0;
-                //int b = 5/k;
                 if(dummyRegisters[a]!=Float.NaN && dummyRegisters[a]!=Float.NEGATIVE_INFINITY && dummyRegisters[a]!=Float.POSITIVE_INFINITY)
                  cumulationRegisters[a] += weights[i] * dummyRegisters[a];
             }
