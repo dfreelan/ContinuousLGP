@@ -27,7 +27,7 @@ public class ContinuousLGP {
         ContinuousProgram prog = new ContinuousProgram(1000,4,7,7,0,0,0);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         Engine engine = new Engine(getOperators(),null);
-        RegisterProfile prof = new RegisterProfile(engine);
+        RegisterProfile prof = new RegisterProfile(engine,prog.lines.length);
         ContinuousMachine machine = new ContinuousMachine(prog,prof,1,7,0);
         machine.pcs[0].registers[0] = 2.0f;
         for(int i = 0; i<1000; i++)
@@ -35,12 +35,12 @@ public class ContinuousLGP {
         System.out.println(machine.pcs[0].registers[0]);
     }
     static Operator[] getOperators(){
-        Operator ops[] = new Operator[5];
+        Operator ops[] = new Operator[1];
         ops[0] = new Add();
-        ops[1] = new Divide();
-        ops[2] = new Subtract();
-        ops[3] = new Multiply();
-        ops[4] = new NoOp();
+       // ops[4] = new Divide();
+        //ops[1] = new Subtract();
+        //ops[2] = new Multiply();
+        //ops[3] = new NoOp();
         return ops;
     }
 }

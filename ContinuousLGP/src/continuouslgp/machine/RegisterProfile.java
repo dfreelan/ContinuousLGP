@@ -13,12 +13,14 @@ import continuouslgp.Engine.Engine;
  * @author dfreelan
  */
 public class RegisterProfile {
-    int length;
+    public int length;
     int readOnlyRegisters;
     boolean[] persistentRegister;
-    int totalLinesOfCode;
-    Engine engine;
-    public RegisterProfile(Engine engine){
+ 
+    public int totalLinesOfCode;
+    public Engine engine;
+    public RegisterProfile(Engine engine, int totalLinesOfCode){
+        this.totalLinesOfCode = totalLinesOfCode;
         this.engine = engine;
     }
     //the value of the register is fix

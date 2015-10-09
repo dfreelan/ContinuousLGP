@@ -26,14 +26,14 @@ public class FloatMath {
     }
     public static void printFloatArr(float[] arr){
         for(int i = 0; i<arr.length-1; i++){
-            System.out.print(arr[i] + ",");
+            System.err.print(arr[i] + ",");
         }
-        System.out.println(arr[arr.length-1]);
+        System.err.println(arr[arr.length-1]);
     }
     public static void printFloatArr(float[][] arr){
         for(int i = 0; i<arr.length; i++){
             printFloatArr(arr[i]);
         }
-        System.out.println();
+        System.err.println();
     }
 }

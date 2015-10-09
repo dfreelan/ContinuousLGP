@@ -15,8 +15,7 @@ public class Subtract implements Operator {
     public float[] doOperation(float[] registers, int src, int dest) {
         registers[dest] = registers[dest] - registers[src];
         if(Float.isInfinite(registers[dest])){
-            int k = 0;
-            int b = 1/k;
+           registers[dest] = 1.0f;
         }
         return registers;
     }

@@ -15,10 +15,11 @@ import continuouslgp.program.ContinuousLine;
  */
 public class ProgramCounter {
     LineExecutor exec;
-    int line;
-    float weight;
+    public int line;
+    public float weight;
     public float[] registers;   
-    RegisterProfile profile; 
+    public RegisterProfile profile; 
+    public float updateWeight;
     public ProgramCounter[] doInstruction(ContinuousLine line){
         return exec.doLine(line, registers);
     }

@@ -12,5 +12,5 @@ import continuouslgp.machine.ProgramCounter;
  * @author dfreelan
  */
 public interface ControlFlow {
-    public ProgramCounter[] doControlFlow(ProgramCounter current, float[] registers);
+    public ProgramCounter[] doControlFlow(ProgramCounter current, float[] registers, int src, int dest);
 }

@@ -8,6 +8,7 @@ package continuouslgp.Engine;
 
 import continuouslgp.alu.controlflow.ControlFlow;
 import continuouslgp.alu.operator.Operator;
+import continuouslgp.machine.ProgramCounter;
 
 /**
  *
@@ -15,16 +16,56 @@ import continuouslgp.alu.operator.Operator;
  */
 public class Engine {
     Operator operators[];
-    ControlFlow controlFlow[];
+    public ControlFlow controlFlows[];
     
     public Engine(Operator[] operators, ControlFlow[] controlFlow){
         this.operators = operators;
-        this.controlFlow = controlFlow;
+        this.controlFlows = controlFlow;
        
+    }
+    public ProgramCounter[] getResultControl(int[][] questions, float[] pseudoRegisters, float[] weights, ProgramCounter current){
+     
+        ProgramCounter[] dummyCounters;
+        ProgramCounter[] cumulationCounters = new ProgramCounter[current.profile.totalLinesOfCode];
+        //let's set up our cumulation counters.
+        float commandWeightSum= 0.0f;
+        
+        for(int i = 0; i< current.profile.totalLinesOfCode; i++){
+            cumulationCounters[i] = new ProgramCounter(current);
+            cumulationCounters[i].line = i;
+            cumulationCounters[i].weight = 0.0f;
+        }
+        
+        int i = 0;
+        while(i<questions.length && weights[i]!=0){
+            
+            
+            int controlFlow = questions[i][0];
+            int src = questions[i][1];
+            int dest = questions[i][2];
+            //System.out.println("Operator, src, dest:" + controlFlow +"," + src+ "," + dest +  "weight:" + weights[i]);
+            //FloatMath.printFloatArr( dummyRegisters);
+            //ProgramCounter current, float[] registers, int src, int dest);
+            
+            dummyCounters = controlFlows[controlFlow].doControlFlow(current,pseudoRegisters, src, dest);
+
+            for(int a = 0; a<dummyCounters.length; a++){
+                 if(dummyCounters[a].line < cumulationCounters.length)
+                    cumulationCounters[dummyCounters[a].line].weight += current.weight*weights[i]*dummyCounters[a].weight;
+                 
+                 commandWeightSum+= weights[i]*dummyCounters[a].weight;
+            }
+            i++;
+        }
+       // System.err.println(current.weight + "here's the old  weight " + commandWeightSum);
+        current.updateWeight = current.weight*(1.0f-commandWeightSum);
+        System.err.println("here's the current weight, proposed newWeight " + current.weight+"," + current.updateWeight);
+        return cumulationCounters;
     }
     public float[] getResult(int[][] questions, float[] pseudoRegisters, float[] weights){
         float[] cumulationRegisters = new float[pseudoRegisters.length];
         float[] dummyRegisters;
+        float weightAccumulator= 0.0f;
         int i = 0;
         while(i<questions.length && weights[i]!=0){
             
@@ -39,11 +80,18 @@ public class Engine {
             dummyRegisters = operators[operator].doOperation(dummyRegisters, src, dest);
             //System.out.println("result:");
             //FloatMath.printFloatArr(dummyRegisters);
+            weightAccumulator += weights[i];
             for(int a = 0; a<cumulationRegisters.length; a++){
-                if(dummyRegisters[a]!=Float.NaN && dummyRegisters[a]!=Float.NEGATIVE_INFINITY && dummyRegisters[a]!=Float.POSITIVE_INFINITY)
-                 cumulationRegisters[a] += weights[i] * dummyRegisters[a];
+                
+                if(dummyRegisters[a]!=Float.NaN && dummyRegisters[a]!=Float.NEGATIVE_INFINITY && dummyRegisters[a]!=Float.POSITIVE_INFINITY){
+                    cumulationRegisters[a] += weights[i] * dummyRegisters[a];
+                }
             }
             i++;
+        }
+        //System.err.println("weight accumulator:" + weightAccumulator);
+        for(int a = 0; a<cumulationRegisters.length; a++){
+            cumulationRegisters[a] += (1-weightAccumulator)*pseudoRegisters[a]; 
         }
         return cumulationRegisters;
     }

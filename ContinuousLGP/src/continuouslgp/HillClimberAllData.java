@@ -7,6 +7,9 @@ package continuouslgp;
 
 import static continuouslgp.ContinuousLGP.getOperators;
 import continuouslgp.Engine.Engine;
+import continuouslgp.alu.controlflow.ControlFlow;
+import continuouslgp.alu.controlflow.Goto;
+import continuouslgp.alu.controlflow.IfLessSigmoidGeometric;
 import continuouslgp.machine.ContinuousMachine;
 import continuouslgp.machine.RegisterProfile;
 import continuouslgp.program.ContinuousProgram;
@@ -19,28 +22,30 @@ import java.util.Random;
 public class HillClimberAllData {
     static Random generator = new Random();
     public static void main(String[] args){
-         ContinuousProgram prog = new ContinuousProgram(100,5,5,5,2,2,2);
+         ContinuousProgram prog = new ContinuousProgram(16,4,4,4,0,0,0);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
-        Engine engine = new Engine(getOperators(),null);
-        RegisterProfile prof = new RegisterProfile(engine);
+        Engine engine = new Engine(getOperators(),getControlFlow());
+        RegisterProfile prof = new RegisterProfile(engine,prog.lines.length);
         ContinuousMachine machine = new ContinuousMachine(prog,prof,1,5,0);
         int evaluations = 0;
         float[][] trainingData = getTrainingData(20);
         float[][] testingData = getTrainingData(20);
+        System.err.println("testing....");
         float currentErr =  getTestingErr(machine,trainingData);
-        while(Float.isInfinite(currentErr)){
-            prog = new ContinuousProgram(10,5,5,5,0,0,0);
+        System.err.println("dont testing " + currentErr);
+        while(Float.isInfinite(currentErr) || Float.isNaN(currentErr)){
+            prog = new ContinuousProgram(16,4,4,4,0,0,0);
             machine = new ContinuousMachine(prog,prof,1,5,0);
             currentErr =  getTestingErr(machine,trainingData);
             System.err.println("err was infinite");
         }
-        for(int iterations = 0; iterations<50000; iterations++){
+         float mutateIncrement = .1f;
+           
+        for(int iterations = 0; iterations<10000; iterations++){
           
             if(evaluations>=50000) break;
-           
-            float mutateIncrement = .001f;
+            mutateIncrement = generator.nextFloat()*generator.nextFloat()*generator.nextFloat();
             float mutateAmount = mutateIncrement;
-            
             currentErr = getTestingErr(machine,trainingData); //getError(trainingData[pair], machine);
 
             
@@ -49,19 +54,26 @@ public class HillClimberAllData {
             machine.mutate(mutateAmount);
             float newErr = getTestingErr(machine,trainingData);
             boolean wasBetter = false;
+            int incrementAmount = 0;
             while(newErr<currentErr && mutateAmount+mutateIncrement<1.0f){
                 currentErr = newErr;
                 if(wasBetter ==false){
                     System.err.println("makin it better, 1 second...");
                 }
                 wasBetter = true;
+                if(incrementAmount%100 == 99){
+                    mutateIncrement*=10;
+                }
                 mutateAmount += mutateIncrement;
+                
                 machine.changeStrength(mutateAmount);
                 newErr = getTestingErr(machine,trainingData);
+                incrementAmount++;
             }
             machine.changeStrength(mutateAmount-mutateIncrement);
             
             if(wasBetter){
+                
                 float err1 = getTestingErr(machine,testingData);
                 if(Float.isInfinite(err1)){
                     err1 = -1;
@@ -70,8 +82,17 @@ public class HillClimberAllData {
                 if(Float.isInfinite(err2)){
                     err2 = -1;
                 }
-                System.err.println(iterations + "," +evaluations +", " +(newErr/currentErr)+ ", " + mutateAmount + ", " + currentErr + ", " + err1 + ", "  + err2);
-                        
+                System.err.println(iterations + ", canhalt," +evaluations +", " +(newErr/currentErr)+ ", " + mutateAmount + ", " + currentErr + ", " + err1 + ", "  + err2);
+                if(incrementAmount < 5 ){
+                    mutateIncrement/=10;
+                    if(mutateIncrement<.00000001f){
+                        mutateIncrement = .00000001f;
+                    }
+                }else if(incrementAmount >20){
+                    mutateIncrement*=10;
+                }
+            }else{
+               // System.err.println("wasnt better");
             }
 
             
@@ -93,8 +114,8 @@ public class HillClimberAllData {
     static float[][] getTrainingData(int number){
         float[][] data = new float[20][2];
         for(int i = 0; i<data.length; i++){
-            data[i][0] = generator.nextFloat();
-            data[i][1] = (float)Math.tan(data[i][0]);//data[i][0]*data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0] + data[i][0];//Math.sqrt(data[i][0]);
+            data[i][0] = generator.nextFloat()*5;
+            data[i][1] = (float)Math.sqrt(data[i][0]) ;//data[i][0]*data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0] + data[i][0];//Math.sqrt(data[i][0]);
         }
         return data;
     }
@@ -108,24 +129,31 @@ public class HillClimberAllData {
     }
     static float getError(float[] inputOutputPair, ContinuousMachine machine){
        machine.hardRestart();
-       machine.pcs[0].registers[0] = inputOutputPair[0];
-       for(int i = 0; i<machine.program.lines.length; i++){
+       machine.registers[0] = inputOutputPair[0];
+       for(int i = 0; i<machine.program.lines.length*2; i++){
             machine.doStep();
-            machine.pcs[0].registers[0] = inputOutputPair[0];
+            machine.registers[0] = inputOutputPair[0];
+            //System.err.println(machine.registers[2]);
        }
-       float answer = machine.pcs[0].registers[3];
+       float answer = machine.registers[2];
        
        return (answer-inputOutputPair[1])*(answer-inputOutputPair[1]);
     }
     static float getOutput(ContinuousMachine machine, float input){
        machine.hardRestart();
-       machine.pcs[0].registers[0] = input;
-       for(int i = 0; i<machine.program.lines.length; i++){
+       machine.registers[0] = input;
+       for(int i = 0; i<machine.program.lines.length*2; i++){
             machine.doStep();
-            machine.pcs[0].registers[0] = input;
+            machine.registers[0] = input;
        }
-       float answer = machine.pcs[0].registers[3];
+       float answer = machine.registers[2];
        
        return answer;
+    }
+    static ControlFlow[] getControlFlow(){
+        ControlFlow cfs[] = new ControlFlow[2];
+        cfs[0] = new IfLessSigmoidGeometric();
+        cfs[1] = new Goto();
+        return cfs;
     }
 }
