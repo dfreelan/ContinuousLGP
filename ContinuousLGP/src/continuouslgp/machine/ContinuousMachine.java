@@ -72,25 +72,37 @@ public class ContinuousMachine {
         
         float totalWeight = 0;
         for(int k = 0; k<pcs.length; k++){
-            totalWeight += pcs[k].weight;
-            System.err.println(k + " line:"  + pcs[k].line + ", " + pcs[k].weight);
-            FloatMath.printFloatArr(program.lines[pcs[k].line].getLineValues());
-            for(int a = 0; a<registers.length; a++){
-                System.err.println("value of k,a is " + k + ", " + a +":" + pcs[k].registers[a]);
-                registers[a] += pcs[k].registers[a]*pcs[k].weight;
+            if(pcs[k].weight!=0.0f){
+                totalWeight += pcs[k].weight;
+                System.err.println(k + " line:"  + pcs[k].line + ", " + pcs[k].weight);
+                FloatMath.printFloatArr(program.lines[pcs[k].line].getLineValues());
+                for(int a = 0; a<registers.length; a++){
+                    System.err.println("value of k,a is " + k + ", " + a +":" + pcs[k].registers[a]);
+                    registers[a] += pcs[k].registers[a]*pcs[k].weight;
+                }
+                pcs[k].weight = pcs[k].updateWeight;
             }
-            pcs[k].weight = pcs[k].updateWeight;
          }
         System.err.println("totalWeight is " + totalWeight);
-       // if(totalWeight<1.0f && totalWeight!=0.0f){
-         //  
+        // if(totalWeight<1.0f && totalWeight!=0.0f){
+        //  
         //}
         //
-
+        for(int k = 0; k<pcs.length; k++){
+            totalWeight += pcs[k].weight;
+            //System.err.println("BEFORE THE before line:"  + k + ", " + pcs[k].weight);
+        }
         for(int k = pcs.length-1; k>0; k--){
             pcs[k].weight = pcs[k-1].weight;
+            pcs[k].updateWeight = 0.0f;
         }
         pcs[0].weight = 0;
+        pcs[0].updateWeight = 0;
+         totalWeight = 0;
+        for(int k = 0; k<pcs.length; k++){
+            totalWeight += pcs[k].weight;
+            //System.err.println("before line:"  + k + ", " + pcs[k].weight);
+        }
         for(int k = 0; k<allCounters.length; k++){
             for(int a = 0; a<allCounters[k].length; a++){
                 
@@ -106,7 +118,7 @@ public class ContinuousMachine {
         totalWeight = 0;
         for(int k = 0; k<pcs.length; k++){
             totalWeight += pcs[k].weight;
-         //   System.err.println("line:"  + k + ", " + pcs[k].weight);
+            System.err.println("after line:"  + k + ", " + pcs[k].weight);
         }
         
          System.err.println("total weight is  ACTUALY" + totalWeight);

@@ -37,7 +37,7 @@ public class Engine {
         }
         
         int i = 0;
-        while(i<questions.length && weights[i]!=0){
+        while(i<questions.length && weights[i]!=0.0f){
             
             
             int controlFlow = questions[i][0];
@@ -53,13 +53,17 @@ public class Engine {
                  if(dummyCounters[a].line < cumulationCounters.length)
                     cumulationCounters[dummyCounters[a].line].weight += current.weight*weights[i]*dummyCounters[a].weight;
                  
-                 commandWeightSum+= weights[i]*dummyCounters[a].weight;
+                 commandWeightSum+= current.weight*weights[i]*dummyCounters[a].weight;
             }
             i++;
         }
-       // System.err.println(current.weight + "here's the old  weight " + commandWeightSum);
-        current.updateWeight = current.weight*(1.0f-commandWeightSum);
-        System.err.println("here's the current weight, proposed newWeight " + current.weight+"," + current.updateWeight);
+       // System.err.println("combined weight of newly spawned PC's from this PC:" + current.line  + ", " + commandWeightSum);
+        current.updateWeight = (current.weight-commandWeightSum);
+        //System.err.println("here's the current weight, proposed newWeight  " + current.line + ":" +  current.weight+"," + current.updateWeight);
+        /*for(int k = 0; k<cumulationCounters.length; k++){
+            
+            System.err.println("SUPER BEFORE THE before line:"  + cumulationCounters[k].line + ", " + cumulationCounters[k].weight);
+        }*/
         return cumulationCounters;
     }
     public float[] getResult(int[][] questions, float[] pseudoRegisters, float[] weights){

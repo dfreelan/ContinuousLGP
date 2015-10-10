@@ -22,7 +22,7 @@ import java.util.Random;
 public class HillClimber {
     static Random generator = new Random();
     public static void main(String[] args){
-         ContinuousProgram prog = new ContinuousProgram(16,2,4,4,0,0,0);
+         ContinuousProgram prog = new ContinuousProgram(16,3,4,4,0,0,0);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         Engine engine = new Engine(getOperators(),getControlFlow());
         RegisterProfile prof = new RegisterProfile(engine,prog.lines.length);
@@ -45,7 +45,7 @@ public class HillClimber {
                     if(Float.isInfinite(currentErr)){
                         machine.mutate(1);
                         //System.err.println("i mutated it good");
-                        prog = new ContinuousProgram(16,2,4,4,0,0,0);
+                        prog = new ContinuousProgram(16,3,4,4,0,0,0);
                         machine = new ContinuousMachine(prog,prof,1,4,0);
                         break;
                     }
@@ -79,7 +79,7 @@ public class HillClimber {
                         }
                         if(Float.isInfinite(newErr)){
                             //System.err.println("error was infinite");
-                            prog =  new ContinuousProgram(16,2,4,4,0,0,0);
+                            prog =  new ContinuousProgram(16,3,4,4,0,0,0);
                             machine = new ContinuousMachine(prog,prof,1,4,0);
                             fail = true;
                             
@@ -180,9 +180,9 @@ public class HillClimber {
        return answer;
     }
      static ControlFlow[] getControlFlow(){
-        ControlFlow cfs[] = new ControlFlow[1];
+        ControlFlow cfs[] = new ControlFlow[2];
         cfs[0] = new IfLessSigmoidGeometric();
-        //cfs[1] = new Goto();
+        cfs[1] = new Goto();
         return cfs;
     }
 }
