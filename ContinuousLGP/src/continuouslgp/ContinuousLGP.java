@@ -35,12 +35,12 @@ public class ContinuousLGP {
         System.out.println(machine.pcs[0].registers[0]);
     }
     static Operator[] getOperators(){
-        Operator ops[] = new Operator[1];
+        Operator ops[] = new Operator[5];
         ops[0] = new Add();
-       // ops[4] = new Divide();
-        //ops[1] = new Subtract();
-        //ops[2] = new Multiply();
-        //ops[3] = new NoOp();
+        ops[1] = new Divide();
+        ops[2] = new Subtract();
+        ops[3] = new Multiply();
+        ops[4] = new NoOp();
         return ops;
     }
 }

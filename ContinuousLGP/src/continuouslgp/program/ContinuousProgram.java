@@ -35,9 +35,19 @@ public class ContinuousProgram {
             lines[i].mutate(strength);
         }
     }
+     public void mutate(float strength,float strength2){
+        for(int i = 0; i<lines.length; i++){
+            lines[i].mutate(strength, strength2);
+        }
+    }
     public void changeStrength(float strength){
         for(int i = 0; i<lines.length; i++){
             lines[i].changeStrength(strength);
+        }
+    }
+     public void changeStrength(float strength, float strength2){
+        for(int i = 0; i<lines.length; i++){
+            lines[i].changeStrength(strength,strength2);
         }
     }
     public float[][] getLineValues(int line){

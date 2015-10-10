@@ -15,7 +15,7 @@ public class Goto implements ControlFlow {
 
     @Override
     public ProgramCounter[] doControlFlow(ProgramCounter current, float[] registers, int src, int dest) {
-        int line = (src*registers.length+dest)/2;
+        int line = (src*registers.length+dest);
         ProgramCounter[] newPCs = new ProgramCounter[1];
         //
         newPCs[0] = new ProgramCounter(current);

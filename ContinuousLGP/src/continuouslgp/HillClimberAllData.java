@@ -22,7 +22,7 @@ import java.util.Random;
 public class HillClimberAllData {
     static Random generator = new Random();
     public static void main(String[] args){
-         ContinuousProgram prog = new ContinuousProgram(16,4,4,4,0,0,0);
+         ContinuousProgram prog = new ContinuousProgram(16,7,4,4,0,0,0);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         Engine engine = new Engine(getOperators(),getControlFlow());
         RegisterProfile prof = new RegisterProfile(engine,prog.lines.length);
@@ -30,11 +30,12 @@ public class HillClimberAllData {
         int evaluations = 0;
         float[][] trainingData = getTrainingData(20);
         float[][] testingData = getTrainingData(20);
+        float totalTravel = 0.0f;
         System.err.println("testing....");
         float currentErr =  getTestingErr(machine,trainingData);
         System.err.println("dont testing " + currentErr);
         while(Float.isInfinite(currentErr) || Float.isNaN(currentErr)){
-            prog = new ContinuousProgram(16,4,4,4,0,0,0);
+            prog = new ContinuousProgram(16,7,4,4,0,0,0);
             machine = new ContinuousMachine(prog,prof,1,5,0);
             currentErr =  getTestingErr(machine,trainingData);
             System.err.println("err was infinite");
@@ -44,7 +45,7 @@ public class HillClimberAllData {
         for(int iterations = 0; iterations<10000; iterations++){
           
             if(evaluations>=50000) break;
-            mutateIncrement = generator.nextFloat()*generator.nextFloat()*generator.nextFloat();
+            mutateIncrement = .0001f;
             float mutateAmount = mutateIncrement;
             currentErr = getTestingErr(machine,trainingData); //getError(trainingData[pair], machine);
 
@@ -70,6 +71,7 @@ public class HillClimberAllData {
                 newErr = getTestingErr(machine,trainingData);
                 incrementAmount++;
             }
+            totalTravel += mutateAmount-mutateIncrement;
             machine.changeStrength(mutateAmount-mutateIncrement);
             
             if(wasBetter){
@@ -82,7 +84,7 @@ public class HillClimberAllData {
                 if(Float.isInfinite(err2)){
                     err2 = -1;
                 }
-                System.err.println(iterations + ", canhalt," +evaluations +", " +(newErr/currentErr)+ ", " + mutateAmount + ", " + currentErr + ", " + err1 + ", "  + err2);
+                System.err.println(iterations + ", nocontrol," +evaluations +", " +(newErr/currentErr)+ ", " + mutateAmount + ", " + currentErr + ", " + err1 + ", "  + err2);
                 if(incrementAmount < 5 ){
                     mutateIncrement/=10;
                     if(mutateIncrement<.00000001f){
@@ -108,6 +110,8 @@ public class HillClimberAllData {
             float input = k*(9.0f/200.0f);
             System.err.println(input + " " + getOutput(machine,input));
         }
+        
+        System.err.println("total travel :" + totalTravel);
         //System.err.println(sum);
     }
     
@@ -115,7 +119,7 @@ public class HillClimberAllData {
         float[][] data = new float[20][2];
         for(int i = 0; i<data.length; i++){
             data[i][0] = generator.nextFloat()*5;
-            data[i][1] = (float)Math.sqrt(data[i][0]) ;//data[i][0]*data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0] + data[i][0];//Math.sqrt(data[i][0]);
+            data[i][1] = (float)data[i][0]*data[i][0]+data[i][0] ;//data[i][0]*data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0]*data[i][0] + data[i][0]*data[i][0] + data[i][0];//Math.sqrt(data[i][0]);
         }
         return data;
     }

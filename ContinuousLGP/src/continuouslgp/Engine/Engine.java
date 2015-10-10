@@ -37,7 +37,7 @@ public class Engine {
         }
         
         int i = 0;
-        while(i<questions.length && weights[i]!=0.0f){
+        while(i<questions.length){
             
             
             int controlFlow = questions[i][0];
@@ -71,7 +71,7 @@ public class Engine {
         float[] dummyRegisters;
         float weightAccumulator= 0.0f;
         int i = 0;
-        while(i<questions.length && weights[i]!=0){
+        while(i<questions.length ){
             
             dummyRegisters = pseudoRegisters.clone();
             int operator = questions[i][0];

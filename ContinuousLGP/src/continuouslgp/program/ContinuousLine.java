@@ -38,6 +38,16 @@ public class ContinuousLine {
         src.changeStrength(strength);
         dest.changeStrength(strength);
     }
+     public void mutate(float strength, float strength2){
+       instr.mutate(strength, strength2);
+       src.mutate(strength,strength2);
+       dest.mutate(strength,strength2);
+    }
+    public void changeStrength(float strength, float strength2){
+        instr.changeStrength(strength,strength2);
+        src.changeStrength(strength,strength2);
+        dest.changeStrength(strength,strength2);
+    }
     private WeightVector assignType(int type, int length){
         switch(type){
             case 0:

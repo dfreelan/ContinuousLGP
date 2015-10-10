@@ -50,6 +50,12 @@ public class ContinuousMachine {
     public void changeStrength(float strength){
         program.changeStrength(strength);
     }
+     public void mutate(float strength, float strength2){
+        program.mutate(strength,strength2);
+    }
+    public void changeStrength(float strength, float strength2){
+        program.changeStrength(strength, strength2);
+    }
     public void doStep(){
         ProgramCounter allCounters[][] = new ProgramCounter[pcs.length][];
         int i = 0;
@@ -127,7 +133,7 @@ public class ContinuousMachine {
         }*/
         
          //System.err.println("total weight is  ACTUALY" + totalWeight);
-         System.err.println( "register value:" + registers[3]);
+         //System.err.println( "register value:" + registers[3]);
     }
     public void hardRestart(){
         pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
@@ -137,6 +143,9 @@ public class ContinuousMachine {
         for(int i = 0; i<registers.length; i++){
             registers[i] = 1;
         }
+    }
+    public void print(){
+        program.printAll();
     }
     public void softRestart(){
         if(resetPcs){

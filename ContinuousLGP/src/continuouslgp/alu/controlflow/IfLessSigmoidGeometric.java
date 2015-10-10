@@ -22,7 +22,7 @@ public class IfLessSigmoidGeometric implements ControlFlow {
         if(divByZeroProtector<.00001f){
             divByZeroProtector = .00001f;
         }
-        float result = (registers[src]-registers[dest])/divByZeroProtector;
+        float result = (registers[src]-registers[dest]);
         line1Proportion = sigmoid(result);
         line2Proportion = 1.0f-line1Proportion;
         if(line1Proportion>1.0f || line1Proportion <0.0f || line1Proportion+line2Proportion>1.0f){

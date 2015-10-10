@@ -21,6 +21,9 @@ public abstract class WeightVector {
     float[] oldWeights = null;
     float[] mutateVector = null;
     
+    float[] mutateComponent1 = null;
+    float[] mutateComponent2 = null;
+    
     public WeightVector(int length){
         this.length = length;
         Initialize();
@@ -32,6 +35,9 @@ public abstract class WeightVector {
     
     public abstract float[] mutate(float strength);
     public abstract float[] changeStrength(float strength);
+    
+    public abstract float[] mutate(float strength,float strength2);
+    public abstract float[] changeStrength(float strength,float strength2);
     
     public float[] getWeights(){
         return weights;

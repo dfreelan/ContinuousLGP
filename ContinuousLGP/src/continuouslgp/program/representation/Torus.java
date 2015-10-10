@@ -54,5 +54,15 @@ public class Torus extends WeightVector {
         arr[(integerPart+1)%length] = decimalPart;
         return arr;
     }
+
+    @Override
+    public float[] mutate(float strength, float strength2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public float[] changeStrength(float strength, float strength2) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

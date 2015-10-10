@@ -38,6 +38,10 @@ public class NaiiveSimplex extends Simplex{
         //applies the mutation part
         for(int i = 0; i<weights.length; i++){
             weights[i] = weights[i]*(1-strength) + mutateVector[i]*(strength);
+            if(weights[i]<0.0f){
+                System.err.println("weights were bad");
+                System.exit(0);
+            }
         }
         //in case of floating point error and such, renormalize.
          FloatMath.normalize(weights);

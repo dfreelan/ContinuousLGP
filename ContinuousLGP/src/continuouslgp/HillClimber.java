@@ -22,7 +22,7 @@ import java.util.Random;
 public class HillClimber {
     static Random generator = new Random();
     public static void main(String[] args){
-         ContinuousProgram prog = new ContinuousProgram(16,2,4,4,0,0,0);
+         ContinuousProgram prog = new ContinuousProgram(16,5,4,4,2,2,2);
         // public ContinuousMachine(ContinuousProgram p, RegisterProfile profile, int maxPCs, int numRegisters, int execType){
         Engine engine = new Engine(getOperators(),getControlFlow());
         RegisterProfile prof = new RegisterProfile(engine,prog.lines.length);
@@ -30,9 +30,9 @@ public class HillClimber {
         int evaluations = 0;
         float[][] trainingData = getTrainingData(20);
         float[][] testingData = getTrainingData(20);
-        for(int iterations = 0; iterations<1000; iterations++){
+        for(int iterations = 0; iterations<250; iterations++){
             //System.err.println("epoch:" +iterations);
-            if(evaluations>=50000*200) break;
+            if(evaluations>=500000) break;
             for(int pair = 0; pair<trainingData.length; pair++){
                 int tries = 0;
                
@@ -45,7 +45,7 @@ public class HillClimber {
                     if(Float.isInfinite(currentErr)){
                         machine.mutate(1);
                         //System.err.println("i mutated it good");
-                        prog = new ContinuousProgram(16,2,4,4,0,0,0);
+                        prog = new ContinuousProgram(16,5,4,4,2,2,2);
                         machine = new ContinuousMachine(prog,prof,1,4,0);
                         break;
                     }
@@ -53,14 +53,14 @@ public class HillClimber {
                     float newErr = getError(trainingData[pair],machine);
                     boolean fail = false;
                     float prevError = newErr;
-                    float minChange = .99f;
+                    float minChange = .6f;
                     evaluations++;
                     if(currentErr>.01f){
                        // minChange =.95f;
                     }
                     int tries2 = 0;
                     if(newErr<currentErr){
-                    while( (!(newErr/currentErr >.80 && newErr/currentErr <minChange ))){
+                    while( (!(newErr/currentErr >.50 && newErr/currentErr <minChange ))){
                         tries2++;
                         if(tries2%100==99){
                             System.err.println("tries2:" + tries2 + ", " + newErr/currentErr);
@@ -79,7 +79,7 @@ public class HillClimber {
                         }
                         if(Float.isInfinite(newErr)){
                             //System.err.println("error was infinite");
-                            prog =  new ContinuousProgram(16,2,4,4,0,0,0);
+                            prog =  new ContinuousProgram(16,5,4,4,2,2,2);
                             machine = new ContinuousMachine(prog,prof,1,4,0);
                             fail = true;
                             
@@ -144,8 +144,8 @@ public class HillClimber {
     static float[][] getTrainingData(int number){
         float[][] data = new float[20][2];
         for(int i = 0; i<data.length; i++){
-            data[i][0] = 1;//generator.nextFloat()*5;
-            data[i][1] = (float)data[i][0]*5 +2 + data[i][0]*data[i][0]/2 ;
+            data[i][0] = generator.nextFloat()*5;
+            data[i][1] = (float)data[i][0] + data[i][0]*data[i][0] ;
         }
         return data;
     }
@@ -161,13 +161,10 @@ public class HillClimber {
        machine.hardRestart();
        machine.registers[0] = inputOutputPair[0];
        for(int i = 0; i<machine.program.lines.length; i++){
-            for(int k = 0; k<machine.registers.length; k++){
-                
-                //machine.registers[k] = 1.0f;
-            } 
+           
            machine.doStep();
            
-            //machine.registers[0] = inputOutputPair[0];
+            machine.registers[0] = inputOutputPair[0];
        }
        float answer = machine.registers[1];
        
@@ -177,11 +174,8 @@ public class HillClimber {
        machine.hardRestart();
        machine.registers[0] = input;
        for(int i = 0; i<machine.program.lines.length; i++){
-           for(int k = 0; k<machine.registers.length; k++){
-                //machine.registers[k] = 1.0f;
-            } 
            machine.doStep();
-            //machine.registers[0] = input;
+           machine.registers[0] = input;
              
        }
        float answer = machine.registers[1];
@@ -189,9 +183,9 @@ public class HillClimber {
        return answer;
     }
      static ControlFlow[] getControlFlow(){
-        ControlFlow cfs[] = new ControlFlow[1];
+        ControlFlow cfs[] = new ControlFlow[2];
         cfs[0] = new IfLessSigmoidGeometric();
-        //cfs[1] = new Goto();
+        cfs[1] = new Goto();
         return cfs;
     }
 }
