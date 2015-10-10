@@ -71,7 +71,7 @@ public class CombinationalExecutor extends LineExecutor {
                 }
             }
         }
-        System.err.println("weight accumlated should be about " + testWeight);
+        //System.err.println("weight accumlated should be about " + testWeight);
         return wrap;
     }
     private commandWrapper generateCommands(float[][] instructions) {

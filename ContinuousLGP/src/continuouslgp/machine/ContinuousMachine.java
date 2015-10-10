@@ -74,16 +74,21 @@ public class ContinuousMachine {
         for(int k = 0; k<pcs.length; k++){
             if(pcs[k].weight!=0.0f){
                 totalWeight += pcs[k].weight;
-                System.err.println(k + " line:"  + pcs[k].line + ", " + pcs[k].weight);
-                FloatMath.printFloatArr(program.lines[pcs[k].line].getLineValues());
+                //System.err.println(k + " line:"  + pcs[k].line + ", " + pcs[k].weight);
+                //FloatMath.printFloatArr(program.lines[pcs[k].line].getLineValues());
                 for(int a = 0; a<registers.length; a++){
-                    System.err.println("value of k,a is " + k + ", " + a +":" + pcs[k].registers[a]);
+                    //System.err.println("value of k,a is " + k + ", " + a +":" + pcs[k].registers[a]);
                     registers[a] += pcs[k].registers[a]*pcs[k].weight;
                 }
                 pcs[k].weight = pcs[k].updateWeight;
             }
          }
-        System.err.println("totalWeight is " + totalWeight);
+        if(totalWeight<1.0f){
+            for(int k = 0; k< oldRegisters.length; k++){
+                registers[k] += oldRegisters[k]*(1-totalWeight);
+            }
+        }
+        //System.err.println("totalWeight is " + totalWeight);
         // if(totalWeight<1.0f && totalWeight!=0.0f){
         //  
         //}
@@ -115,14 +120,14 @@ public class ContinuousMachine {
                 }
             }
         }
-        totalWeight = 0;
+        /*totalWeight = 0;
         for(int k = 0; k<pcs.length; k++){
             totalWeight += pcs[k].weight;
             System.err.println("after line:"  + k + ", " + pcs[k].weight);
-        }
+        }*/
         
-         System.err.println("total weight is  ACTUALY" + totalWeight);
-         System.err.println("register value:" + registers[3]);
+         //System.err.println("total weight is  ACTUALY" + totalWeight);
+         System.err.println( "register value:" + registers[3]);
     }
     public void hardRestart(){
         pcs[0] = new ProgramCounter(0,1.0f,execType, profile);
