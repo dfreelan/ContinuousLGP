@@ -42,7 +42,8 @@ public abstract class WeightVector {
     public float[] getWeights(){
         return weights;
     }
-    void setWeights(float[] weights){
+    //
+    public void setWeights(float[] weights){
         this.weights = weights;
     }
 
