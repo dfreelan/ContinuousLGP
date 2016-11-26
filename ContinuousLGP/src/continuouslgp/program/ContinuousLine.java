@@ -38,7 +38,7 @@ public class ContinuousLine {
         src.changeStrength(strength);
         dest.changeStrength(strength);
     }
-     public void mutate(float strength, float strength2){
+    public void mutate(float strength, float strength2){
        instr.mutate(strength, strength2);
        src.mutate(strength,strength2);
        dest.mutate(strength,strength2);
@@ -67,5 +67,13 @@ public class ContinuousLine {
         ret[1] = src.getWeights();
         ret[2] = dest.getWeights();
         return ret;
+    }
+    //this
+    public void setLineValues(float[][] values) {
+       
+        instr.setWeights(values[0]);
+        src.setWeights(values[1]);
+        dest.setWeights(values[2]);
+        
     }
 }
